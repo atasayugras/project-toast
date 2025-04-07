@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './Toast.module.css';
 import {
   AlertOctagon,
   AlertTriangle,
@@ -6,33 +7,73 @@ import {
   Info,
   X,
 } from 'react-feather';
+import VisuallyHidden from "../VisuallyHidden";
 
-import VisuallyHidden from '../VisuallyHidden';
 
-import styles from './Toast.module.css';
+function Toast({variant, handleDismiss, children}) {
+    const ICONS_BY_VARIANT = {
+        notice: Info,
+        warning: AlertTriangle,
+        success: CheckCircle,
+        error: AlertOctagon,
+    };
+    const Icon = ICONS_BY_VARIANT[variant];
 
-const ICONS_BY_VARIANT = {
-  notice: Info,
-  warning: AlertTriangle,
-  success: CheckCircle,
-  error: AlertOctagon,
-};
 
-function Toast() {
   return (
-    <div className={`${styles.toast} ${styles.notice}`}>
+    <div className={`${styles.toast} ${styles[variant]}`}>
       <div className={styles.iconContainer}>
-        <Info size={24} />
+          <Icon size={24} />
       </div>
+
       <p className={styles.content}>
-        16 photos have been uploaded
+          <VisuallyHidden>
+              {variant} -
+          </VisuallyHidden>
+          {children}
       </p>
-      <button className={styles.closeButton}>
+      <button
+          className={styles.closeButton}
+          onClick={handleDismiss}
+          aria-label="Dismiss message"
+          aria-live="off">
         <X size={24} />
-        <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>
     </div>
   );
 }
 
+
+/*
+<ol
+  class="ToastShelf_wrapper"
++ role="region"
++ aria-live="polite"
++ aria-label="Notification"
+>
+  <li class="ToastShelf_toastWrapper">
+    <div class="Toast_toast Toast_error">
+      <div class="Toast_iconContainer">
+        <!-- Variant SVG icon -->
+      </div>
+      <p class="Toast_content">
++       <div class="VisuallyHidden_wrapper">
++         error -
++       </div>
+        Something went wrong! Please contact customer support
+      </p>
+      <button
+        class="Toast_closeButton"
++       aria-label="Dismiss message"
++       aria-live="off"
+      >
+        <!-- Close SVG icon -->
+-       <div class="VisuallyHidden_wrapper">
+-         Dismiss message
+-       </div>
+      </button>
+    </div>
+  </li>
+</ol>
+*/
 export default Toast;
